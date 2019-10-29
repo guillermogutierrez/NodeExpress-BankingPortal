@@ -24,7 +24,7 @@ app.post('/transfer', (req, res) => {
     const from = req.params.from;
     const to = req.params.to;
     const amount = req.params.amount;
-    console.log('BODY' + req.params.to.)
+
     accounts[from].balance = accounts[from].balance - amount;
     accounts[to].balance = parseInt(accounts[to].balance, 10) + parseInt(amount, 10);
     var accountsJSON = JSON.stringify(accounts);
