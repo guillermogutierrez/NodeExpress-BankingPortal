@@ -21,20 +21,16 @@ app.get('/credit', (req, res) => res.render('account', { account: accounts.credi
 app.get('/profile', (req, res) => res.render('profile', { user: users[0] }));
 app.get('/transfer', (req, res) => res.render('transfer', { user: users[0] }));
 app.post('/transfer', (req, res) => {
-    const from = req.params.from;
-    const to = req.params.to;
-    const amount = req.params.amount;
-
-    accounts[from].balance = accounts[from].balance - amount;
-    accounts[to].balance = parseInt(accounts[to].balance, 10) + parseInt(amount, 10);
+    accounts[req.body.from].balance = accounts[req.body.from].balance - req.body.amount;
+    accounts[req.body.to].balance = parseInt(accounts[req.body.to].balance) + parseInt(req.body.amount, 10);
     var accountsJSON = JSON.stringify(accounts);
     fs.writeFileSync(path.join(__dirname, 'json', 'accounts.json'), accountsJSON, 'utf8');
     res.render('transfer', { 'message': 'Transfer Completed' });
 });
-app.get('/payment', (req, res) => res.render('payment', { 'account': accounts.credit }));
+app.get('/payment', (req, res) => res.render('payment', { account: accounts.credit }));
 app.post('/payment', (req, res) => {
-    accounts.credit.balance = accounts.credit.balance - req.params.amount;
-    accounts.credit.available = parseInt(accounts.credit.available, 10) + parseInt(req.params.amount, 10);
+    accounts.credit.balance -= req.body.amount;
+    accounts.credit.available += parseInt(req.body.amount, 10);
     var accountsJSON = JSON.stringify(accounts);
     fs.writeFileSync(path.join(__dirname, 'json', 'accounts.json'), accountsJSON, 'utf8');
     res.render('payment', { 'message': 'Payment Successful', 'account': accounts.credit });
